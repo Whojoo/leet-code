@@ -6,8 +6,8 @@ var solution = new Solution();
 
 List<SolutionInput> solutionInputList = [
     new SolutionInput(3749, "MMMDCCXLIX"),
-    new SolutionInput(58, "LVIII"),
-    new SolutionInput(1994, "MCMXCIV")
+    // new SolutionInput(58, "LVIII"),
+    // new SolutionInput(1994, "MCMXCIV")
 ];
 
 Console.WriteLine("Gathering results");
