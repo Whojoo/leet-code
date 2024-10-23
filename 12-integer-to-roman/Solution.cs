@@ -4,39 +4,90 @@ namespace _12_integer_to_roman;
 
 public class Solution
 {
+    private readonly struct CalculationSet(
+        int highNumber,
+        int midNumber,
+        int lowNumber,
+        char highCharacter,
+        char midCharacter,
+        char lowCharacter)
+    {
+        public int HighNumber { get; } = highNumber;
+        public int MidNumber { get; } = midNumber;
+        public int LowNumber { get; } = lowNumber;
+        public char HighCharacter { get; } = highCharacter;
+        public char MidCharacter { get; } = midCharacter;
+        public char LowCharacter { get; } = lowCharacter;
+    }
+
     public string IntToRoman(int num)
     {
-        char[] characters = ['M', 'D', 'C', 'L', 'X', 'V', 'I'];
-        int[] values = [1000, 500, 100, 50, 10, 5, 1];
+        CalculationSet[] calculationSets =
+        [
+            new CalculationSet(10000, 5000, 1000, '@', '@', 'M'),
+            new CalculationSet(1000, 500, 100, 'M', 'D', 'C'),
+            new CalculationSet(100, 50, 10, 'C', 'L', 'X'),
+            new CalculationSet(10, 5, 1, 'X', 'V', 'I')
+        ];
 
-        var stringBuilder = new StringBuilder();
+        var output = string.Empty;
+        var input = num;
 
-        for (var i = 0; i < characters.Length; i++)
+        foreach (var calculationSet in calculationSets)
         {
-            var input = string.Empty;
-            var maxRotations = i % 2 == 1 ? 2 : 4;
-            var rotations = 0;
-
-            while (num >= values[i] && rotations < maxRotations)
+            // Rule 0. Should we skip this calculation set?
+            if (input < calculationSet.LowNumber)
             {
-                num -= values[i];
-                input += characters[i];
-                rotations++;
+                continue;
             }
 
-            if (input.Length == maxRotations)
+            // Rule 1. Is the input less than 4 times LowNumber? => 1-3 LowCharacter
+            if (input < calculationSet.LowNumber * 4)
             {
-                input = maxRotations == 2
-                    ? string.Empty
-                    :$"{characters[i]}{characters[i - 1]}";
+                do
+                {
+                    output += calculationSet.LowCharacter;
+                    input -= calculationSet.LowNumber;
+                } while (input >= calculationSet.LowNumber);
+                continue;
             }
 
-            if (input.Length > 0)
+            // Rule 2. Is the input less than MidNumber? => LowCharacter + MidCharacter
+            if (input < calculationSet.MidNumber)
             {
-                stringBuilder.Append(input);
+                output += calculationSet.LowCharacter;
+                output += calculationSet.MidCharacter;
+                input -= calculationSet.LowNumber * 4;
+                continue;
             }
+
+            // Rule 3. Is the input less than MidNumber + LowNumber? => MidCharacter
+            if (input < calculationSet.MidNumber + calculationSet.LowNumber)
+            {
+                output += calculationSet.MidCharacter;
+                input -= calculationSet.MidNumber;
+                continue;
+            }
+
+            // Rule 4. Is the input less than HighNumber - LowNumber? => MidCharacter + 1-3 LowCharacter
+            if (input < calculationSet.HighNumber - calculationSet.LowNumber)
+            {
+                output += calculationSet.MidCharacter;
+                input -= calculationSet.MidNumber;
+                do
+                {
+                    output += calculationSet.LowCharacter;
+                    input -= calculationSet.LowNumber;
+                } while (input >= calculationSet.LowNumber);
+                continue;
+            }
+
+            // Rule 5. => LowCharacter + HighCharacter
+            output += calculationSet.LowCharacter;
+            output += calculationSet.HighCharacter;
+            input -= calculationSet.HighNumber - calculationSet.LowNumber;
         }
 
-        return stringBuilder.ToString();
+        return output;
     }
 }

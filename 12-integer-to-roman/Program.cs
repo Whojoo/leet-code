@@ -6,8 +6,8 @@ var solution = new Solution();
 
 List<SolutionInput> solutionInputList = [
     new SolutionInput(3749, "MMMDCCXLIX"),
-    // new SolutionInput(58, "LVIII"),
-    // new SolutionInput(1994, "MCMXCIV")
+    new SolutionInput(58, "LVIII"),
+    new SolutionInput(1994, "MCMXCIV")
 ];
 
 Console.WriteLine("Gathering results");
@@ -17,9 +17,8 @@ var logBuilder = new StringBuilder().Append('\n');
 
 foreach (var input in solutionInputList)
 {
-    stopwatch.Start();
+    stopwatch.Restart();
     var result = solution.IntToRoman(input.Input);
-    stopwatch.Stop();
 
     Console.WriteLine(
         "(result={0}; output={1}; expectedOutput={2}; time={3}; input={4};",
